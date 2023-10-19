@@ -35,6 +35,8 @@ func init() {
 
     cobra.CheckErr(rootCmd.MarkFlagRequired("server"))
     cobra.CheckErr(rootCmd.MarkFlagRequired("db"))
+    cobra.CheckErr(rootCmd.MarkFlagRequired("config"))
+    cobra.CheckErr(rootCmd.MarkFlagRequired("out"))
 }
 
 func initConfig() {
