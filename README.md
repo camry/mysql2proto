@@ -52,3 +52,9 @@ CREATE TABLE `base_codex_fall` (
   PRIMARY KEY (`fall_id`,`fall_group`,`fall_order`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='图鉴 - 徽章固定掉落配置表';
 ```
+
+## 运行
+
+```bash
+mysql2proto --server dev:Zqa5Q5pYgvmT@192.168.110.112:3306 --db treasure_base  --config ./config/ignore.yaml --out ../../treasure/treasure-proto/cbpb --pkg cbpb --go-pkg gitlab.walrus.cs/treasure/treasure-pb/cbpb
+```
