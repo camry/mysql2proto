@@ -79,7 +79,7 @@ var (
     rootCmd = &cobra.Command{
         Use:     "mysql2proto",
         Short:   "mysql convert to proto.",
-        Version: "v1.0.2",
+        Version: Version,
         Run: func(cmd *cobra.Command, args []string) {
             defer close(ch)
             serverMatched, err1 := regexp.MatchString(HostPattern, server)
