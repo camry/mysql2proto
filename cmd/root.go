@@ -1,6 +1,7 @@
 package cmd
 
 import (
+    _ "embed"
     "fmt"
     "os"
     "regexp"
@@ -22,6 +23,12 @@ const (
     HostPattern = "^(.*)\\:(.*)\\@(.*)\\:(\\d+)$"
     DbPattern   = "^([A-Za-z0-9_]+)$"
 )
+
+//go:embed template/proto.tpl
+var TemplateProto string
+
+//go:embed template/proto_json.tpl
+var TemplateProtoJson string
 
 func Execute() error {
     return rootCmd.Execute()

@@ -131,7 +131,7 @@ func (x *Converter) generate() {
             }
         }
 
-        tpl, err := template.ParseFiles("template/proto.tpl")
+        tpl, err := template.New("TemplateProto").Parse(TemplateProto)
         cobra.CheckErr(err)
         var wr bytes.Buffer
         err = tpl.Execute(&wr, p)

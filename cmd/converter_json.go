@@ -90,8 +90,7 @@ func (x *ConverterJson) generate() {
         }
         p.ProtoMessages = append(p.ProtoMessages, m)
     }
-
-    tpl, err := template.ParseFiles("template/proto_json.tpl")
+    tpl, err := template.New("TemplateProtoJson").Parse(TemplateProtoJson)
     cobra.CheckErr(err)
     var wr bytes.Buffer
     err = tpl.Execute(&wr, p)
