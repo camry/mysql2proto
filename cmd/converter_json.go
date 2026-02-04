@@ -6,16 +6,15 @@ import (
     "os"
     "text/template"
 
-    "github.com/samber/lo"
     "github.com/spf13/cobra"
 )
 
 type BaseJson struct {
     JsonID            int32           `gorm:"column:json_id"`
-    JsonName          string          `gorm:"column:json_name"`
     JsonType          string          `gorm:"column:json_type"`
     JsonFormat        string          `gorm:"column:json_format"`
     ProtoID           int32           `gorm:"column:proto_id"`
+    ProtoName         string          `gorm:"column:proto_name"`
     BaseJsonProtoList []BaseJsonProto `gorm:"foreignKey:proto_id;references:proto_id"`
 }
 
@@ -75,8 +74,11 @@ func (x *ConverterJson) generate() {
         GoPackageName: goPkg,
     }
     for _, baseJson := range x.baseJsonList {
+        if baseJson.ProtoID == 0 {
+            continue
+        }
         m := ProtoMessage{
-            ProtoName: lo.PascalCase(baseJson.JsonName),
+            ProtoName: baseJson.ProtoName,
         }
         for _, baseJsonProto := range baseJson.BaseJsonProtoList {
             m.ProtoColumns = append(m.ProtoColumns, ProtoColumn{

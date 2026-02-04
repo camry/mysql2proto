@@ -22,7 +22,8 @@ type Converter struct {
     serverTableColumns   []string
     serverTableColumnMap map[string]*MySQL2ProtoColumn
     baseJsonMap          map[int32]*BaseJson
-    isJsonColumn         bool
+    hasJsonColumn        bool
+    hasBaseJson          bool
 }
 
 type MySQL2ProtoColumn struct {
@@ -105,11 +106,13 @@ func (x *Converter) generate() {
         p := ProtoTemplate{
             PackageName:   pkg,
             GoPackageName: goPkg,
-            IsJsonColumn:  x.isJsonColumn,
-            TableName:     lo.CamelCase(x.serverTable.TableName),
+            IsJsonColumn:  x.hasJsonColumn,
+            TableName:     lo.PascalCase(x.serverTable.TableName),
         }
-        if x.isJsonColumn {
+        if x.hasJsonColumn {
             p.Imports = append(p.Imports, "google/protobuf/descriptor.proto")
+        }
+        if x.hasBaseJson {
             p.Imports = append(p.Imports, fmt.Sprintf("%s/base_json.proto", pkg))
         }
         for i, columnName := range x.serverTableColumns {
@@ -158,11 +161,14 @@ func (x *Converter) getProtoDataType(serverColumn *Column) string {
         if len(matchList) > 1 {
             jsonId := cast.ToInt32(matchList[1])
             if baseJson, ok := x.baseJsonMap[jsonId]; ok {
-                x.isJsonColumn = true
-                if baseJson.JsonType == "Array" {
-                    return "repeated " + lo.PascalCase(baseJson.JsonName)
+                x.hasJsonColumn = true
+                if baseJson.ProtoID > 0 {
+                    x.hasBaseJson = true
                 }
-                return lo.PascalCase(baseJson.JsonName)
+                if baseJson.JsonType == "Array" {
+                    return "repeated " + baseJson.ProtoName
+                }
+                return baseJson.ProtoName
             }
         }
     }

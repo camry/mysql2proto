@@ -157,6 +157,9 @@ var (
                 err = baseDb.Model(&BaseJson{}).Preload("BaseJsonProtoList").Find(&baseJsonList).Error
                 cobra.CheckErr(err)
                 baseJsonMap = lo.SliceToMap(baseJsonList, func(item *BaseJson) (int32, *BaseJson) {
+                    if item.ProtoID > 0 {
+                        item.ProtoName = lo.PascalCase(item.ProtoName)
+                    }
                     return item.JsonID, item
                 })
             }
