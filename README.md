@@ -53,6 +53,12 @@ CREATE TABLE `base_codex_fall` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='图鉴 - 徽章固定掉落配置表';
 ```
 
+## 构建
+
+```bash
+bash build.bash
+```
+
 ## 运行
 
 ```bash
