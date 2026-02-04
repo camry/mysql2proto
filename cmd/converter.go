@@ -4,6 +4,7 @@ import (
     "bytes"
     "fmt"
     "os"
+    "regexp"
     "strings"
     "text/template"
 
@@ -99,7 +100,7 @@ func (x *Converter) generate() {
             x.serverTableColumnMap[serverColumn.ColumnName] = &MySQL2ProtoColumn{
                 Column:        serverColumn,
                 ProtoDataType: x.getProtoDataType(serverColumn),
-                ColumnComment: strings.ReplaceAll(serverColumn.ColumnComment, "\n", "; "),
+                ColumnComment: regexp.MustCompile(`\s+`).ReplaceAllString(serverColumn.ColumnComment, " "),
             }
         }
 
