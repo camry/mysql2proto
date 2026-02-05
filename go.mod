@@ -1,4 +1,4 @@
-module github.com/camry/mysql2proto
+module mysql2proto
 
 go 1.24.0
 
