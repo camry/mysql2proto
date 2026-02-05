@@ -1,9 +1,9 @@
 package main
 
 import (
-    "log"
     "runtime"
 
+    "github.com/camry/g/v2/gerrors/gerror"
     "github.com/camry/g/v2/glog"
     "github.com/dromara/carbon/v2"
 
@@ -15,6 +15,6 @@ func main() {
         glog.Fatalf("The mysql2proto %s %s Not compatible with %s operating system.", cmd.Version, runtime.Version(), runtime.GOOS)
     }
     if err := cmd.Execute(); err != nil {
-        log.Fatalln(err)
+        glog.Fatal(gerror.Wrap(err, "mysql2proto execute error"))
     }
 }
