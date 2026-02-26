@@ -62,5 +62,6 @@ bash build.bash
 ## 运行
 
 ```bash
-mysql2proto --server dev:Zqa5Q5pYgvmT@192.168.110.112:3306 --db treasure_base  --config ./config/ignore.yaml --out ../../treasure/treasure-proto/cbpb --pkg cbpb --go-pkg gitlab.walrus.cs/treasure/treasure-pb/cbpb
+mysql2proto --server dev:Zqa5Q5pYgvmT@192.168.110.112:3306 --db treasure_base  --config ./config/ignore-client.yaml --out ../../treasure/treasure-proto/cbpb --pkg cbpb --go-pkg gitlab.walrus.cs/treasure/treasure-pb/cbpb
+mysql2proto --server dev:Zqa5Q5pYgvmT@192.168.110.112:3306 --db treasure_base  --config ./config/ignore-server.yaml --out ../../treasure/treasure-proto/sbpb --pkg sbpb --go-pkg gitlab.walrus.cs/treasure/treasure-pb/sbpb
 ```
