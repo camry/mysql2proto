@@ -11,7 +11,7 @@ import "{{ . }}";
 {{- end }}
 
 message {{ .TableName }}List {
-    repeated {{ .TableName }} tables = 1;
+    repeated {{ .TableName }} items = 1;
 }
 
 message {{ .TableName }} {
