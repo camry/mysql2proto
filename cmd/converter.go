@@ -96,6 +96,7 @@ func (x *Converter) generate() {
                 continue
             }
             serverColumn.DataType = strings.ToUpper(serverColumn.DataType)
+            serverColumn.ColumnType = strings.ToUpper(serverColumn.ColumnType)
             x.serverTableColumns = append(x.serverTableColumns, serverColumn.ColumnName)
             x.serverTableColumnMap[serverColumn.ColumnName] = &MySQL2ProtoColumn{
                 Column:        serverColumn,
@@ -145,6 +146,9 @@ func (x *Converter) generate() {
 func (x *Converter) getProtoDataType(serverColumn *Column) string {
     switch serverColumn.DataType {
     case "TINYINT", "SMALLINT", "MEDIUMINT", "INT", "INTEGER":
+        if serverColumn.ColumnType == "TINYINT(1)" {
+            return "bool"
+        }
         return "int32"
     case "BIGINT":
         return "int64"
