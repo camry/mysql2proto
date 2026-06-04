@@ -7,7 +7,7 @@ import (
     "github.com/camry/g/v2/glog"
     "github.com/dromara/carbon/v2"
 
-    "mysql2proto/cmd"
+    "gitea.meigushi.go/meigushi/mysql2proto/cmd"
 )
 
 func main() {
