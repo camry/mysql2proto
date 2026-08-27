@@ -171,9 +171,9 @@ func (x *Converter) getProtoDataType(serverColumn *Column) string {
                     x.hasBaseJson = true
                 }
                 if baseJson.JsonType == "Array" {
-                    return "repeated " + baseJson.ProtoName
+                    return "repeated " + baseJson.BaseJsonProto.ProtoName
                 }
-                return baseJson.ProtoName
+                return baseJson.BaseJsonProto.ProtoName
             }
         }
     }

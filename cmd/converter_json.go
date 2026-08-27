@@ -10,12 +10,11 @@ import (
 )
 
 type BaseJson struct {
-    JsonID            int32           `gorm:"column:json_id"`
-    JsonType          string          `gorm:"column:json_type"`
-    JsonFormat        string          `gorm:"column:json_format"`
-    ProtoID           int32           `gorm:"column:proto_id"`
-    ProtoName         string          `gorm:"column:proto_name"`
-    BaseJsonProtoList []BaseJsonProto `gorm:"foreignKey:proto_id;references:proto_id"`
+    JsonID        int32          `gorm:"column:json_id"`
+    JsonType      string         `gorm:"column:json_type"`
+    JsonFormat    string         `gorm:"column:json_format"`
+    ProtoID       int32          `gorm:"column:proto_id"`
+    BaseJsonProto *BaseJsonProto `gorm:"foreignKey:proto_id;references:proto_id"`
 }
 
 func (x *BaseJson) TableName() string {
@@ -23,6 +22,17 @@ func (x *BaseJson) TableName() string {
 }
 
 type BaseJsonProto struct {
+    ProtoID                 int32                  `gorm:"column:proto_id"`
+    ProtoName               string                 `gorm:"column:proto_name"`
+    IsProtoColumn           bool                   `gorm:"column:is_proto_column"`
+    BaseJsonProtoColumnList []*BaseJsonProtoColumn `gorm:"foreignKey:proto_id;references:proto_id"`
+}
+
+func (x *BaseJsonProto) TableName() string {
+    return "base_json_proto"
+}
+
+type BaseJsonProtoColumn struct {
     ProtoID        int32  `gorm:"column:proto_id"`
     ColumnPosition int32  `gorm:"column:column_position"`
     ColumnRule     string `gorm:"column:column_rule"`
@@ -31,19 +41,19 @@ type BaseJsonProto struct {
     ColumnDesc     string `gorm:"column:column_desc"`
 }
 
-func (x *BaseJsonProto) TableName() string {
-    return "base_json_proto"
+func (x *BaseJsonProtoColumn) TableName() string {
+    return "base_json_proto_column"
 }
 
 type ProtoJsonTemplate struct {
     PackageName   string
     GoPackageName string
-    ProtoMessages []ProtoMessage
+    ProtoMessages []*ProtoMessage
 }
 
 type ProtoMessage struct {
     ProtoName    string
-    ProtoColumns []ProtoColumn
+    ProtoColumns []*ProtoColumn
 }
 
 type ConverterJson struct {
@@ -73,22 +83,26 @@ func (x *ConverterJson) generate() {
         PackageName:   pkg,
         GoPackageName: goPkg,
     }
+    protoMessageMap := make(map[int32]*ProtoMessage, len(x.baseJsonList))
     for _, baseJson := range x.baseJsonList {
-        if baseJson.ProtoID == 0 {
+        if !baseJson.BaseJsonProto.IsProtoColumn {
             continue
         }
-        m := ProtoMessage{
-            ProtoName: baseJson.ProtoName,
+        m := &ProtoMessage{
+            ProtoName: baseJson.BaseJsonProto.ProtoName,
         }
-        for _, baseJsonProto := range baseJson.BaseJsonProtoList {
-            m.ProtoColumns = append(m.ProtoColumns, ProtoColumn{
+        for _, baseJsonProto := range baseJson.BaseJsonProto.BaseJsonProtoColumnList {
+            m.ProtoColumns = append(m.ProtoColumns, &ProtoColumn{
                 ColumnName:    baseJsonProto.ColumnName,
                 ColumnType:    baseJsonProto.ColumnType,
                 ColumnNum:     baseJsonProto.ColumnPosition,
                 ColumnComment: baseJsonProto.ColumnDesc,
             })
         }
-        p.ProtoMessages = append(p.ProtoMessages, m)
+        if _, ok := protoMessageMap[baseJson.BaseJsonProto.ProtoID]; !ok {
+            protoMessageMap[baseJson.BaseJsonProto.ProtoID] = m
+            p.ProtoMessages = append(p.ProtoMessages, m)
+        }
     }
     tpl, err := template.New("TemplateProtoJson").Parse(TemplateProtoJson)
     cobra.CheckErr(err)

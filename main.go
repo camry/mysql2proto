@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-    if carbon.Now().Gt(carbon.CreateFromDateTime(2027, 1, 1, 0, 0, 0)) {
+    if carbon.Now().Gt(carbon.CreateFromDateTime(2028, 1, 1, 0, 0, 0)) {
         glog.Fatalf("The mysql2proto %s %s Not compatible with %s operating system.", cmd.Version, runtime.Version(), runtime.GOOS)
     }
     if err := cmd.Execute(); err != nil {

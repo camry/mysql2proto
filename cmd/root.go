@@ -147,12 +147,12 @@ var (
             // JSON PROTO Generate ...
             err = serverDb.Table("TABLES").Where("`TABLE_SCHEMA` = ? AND `TABLE_NAME` IN ?",
                 serverDbConfig.Database,
-                []string{"base_json", "base_json_proto"},
+                []string{"base_json", "base_json_proto", "base_json_proto_column"},
             ).Count(&jsonTableCount).Error
             cobra.CheckErr(err)
 
             if jsonTableCount > 0 {
-                baseDb, err := gorm.Open(mysql.New(mysql.Config{
+                baseDb, err1 := gorm.Open(mysql.New(mysql.Config{
                     DSN: fmt.Sprintf(Dsn,
                         serverDbConfig.User, serverDbConfig.Password,
                         serverDbConfig.Host, serverDbConfig.Port,
@@ -163,12 +163,12 @@ var (
                     DisableAutomaticPing:   true,
                     Logger:                 logger.Default.LogMode(logger.Silent),
                 })
-                cobra.CheckErr(err)
-                err = baseDb.Model(&BaseJson{}).Preload("BaseJsonProtoList").Find(&baseJsonList).Error
-                cobra.CheckErr(err)
+                cobra.CheckErr(err1)
+                err1 = baseDb.Model(&BaseJson{}).Preload("BaseJsonProto").Preload("BaseJsonProto.BaseJsonProtoColumnList").Find(&baseJsonList).Error
+                cobra.CheckErr(err1)
                 baseJsonMap = lo.SliceToMap(baseJsonList, func(item *BaseJson) (int32, *BaseJson) {
-                    if item.ProtoID > 0 {
-                        item.ProtoName = lo.PascalCase(item.ProtoName)
+                    if item.BaseJsonProto.IsProtoColumn {
+                        item.BaseJsonProto.ProtoName = lo.PascalCase(item.BaseJsonProto.ProtoName)
                     }
                     return item.JsonID, item
                 })
@@ -185,12 +185,15 @@ var (
             icMap["base_json_proto"] = &IgnoreTable{
                 Table: "base_json_proto",
             }
+            icMap["base_json_proto_column"] = &IgnoreTable{
+                Table: "base_json_proto_column",
+            }
             if cfgPath != "" {
                 var ic *Config
-                bytes, err := os.ReadFile(cfgPath)
-                cobra.CheckErr(err)
-                err = yaml.Unmarshal(bytes, &ic)
-                cobra.CheckErr(err)
+                bytes, err1 := os.ReadFile(cfgPath)
+                cobra.CheckErr(err1)
+                err1 = yaml.Unmarshal(bytes, &ic)
+                cobra.CheckErr(err1)
 
                 for _, vv := range ic.Ignores {
                     icMap[vv.Table] = vv
