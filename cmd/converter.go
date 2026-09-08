@@ -167,7 +167,7 @@ func (x *Converter) getProtoDataType(serverColumn *Column) string {
             jsonId := cast.ToInt32(matchList[1])
             if baseJson, ok := x.baseJsonMap[jsonId]; ok {
                 x.hasJsonColumn = true
-                if baseJson.ProtoID > 0 {
+                if baseJson.BaseJsonProto != nil && baseJson.BaseJsonProto.IsProtoColumn {
                     x.hasBaseJson = true
                 }
                 if baseJson.JsonType == "Array" {
