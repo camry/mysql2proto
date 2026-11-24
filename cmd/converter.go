@@ -115,7 +115,7 @@ func (x *Converter) generate() {
             p.Imports = append(p.Imports, "google/protobuf/descriptor.proto")
         }
         if x.hasBaseJson {
-            p.Imports = append(p.Imports, "base_json.proto")
+            p.Imports = append(p.Imports, fmt.Sprintf("%s_base_json.proto", pkg))
         }
         for i, columnName := range x.serverTableColumns {
             if pc, ok := x.serverTableColumnMap[columnName]; ok {
@@ -137,7 +137,7 @@ func (x *Converter) generate() {
         var wr bytes.Buffer
         err = tpl.Execute(&wr, p)
         cobra.CheckErr(err)
-        err = os.WriteFile(fmt.Sprintf("%s/%s.proto", out, x.serverTable.TableName), wr.Bytes(), 0644)
+        err = os.WriteFile(fmt.Sprintf("%s/%s_%s.proto", out, pkg, x.serverTable.TableName), wr.Bytes(), 0644)
         cobra.CheckErr(err)
     }
 }
