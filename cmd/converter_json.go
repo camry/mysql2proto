@@ -109,6 +109,6 @@ func (x *ConverterJson) generate() {
     var wr bytes.Buffer
     err = tpl.Execute(&wr, p)
     cobra.CheckErr(err)
-    err = os.WriteFile(fmt.Sprintf("%s/base_json.proto", out), wr.Bytes(), 0644)
+    err = os.WriteFile(fmt.Sprintf("%s/%s_base_json.proto", out, pkg), wr.Bytes(), 0644)
     cobra.CheckErr(err)
 }
