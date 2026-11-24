@@ -115,7 +115,7 @@ func (x *Converter) generate() {
             p.Imports = append(p.Imports, "google/protobuf/descriptor.proto")
         }
         if x.hasBaseJson {
-            p.Imports = append(p.Imports, fmt.Sprintf("%s/base_json.proto", pkg))
+            p.Imports = append(p.Imports, "base_json.proto")
         }
         for i, columnName := range x.serverTableColumns {
             if pc, ok := x.serverTableColumnMap[columnName]; ok {
